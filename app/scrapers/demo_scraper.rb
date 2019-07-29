@@ -10,7 +10,7 @@ class DemoScraper < Scraper
     end
 
     def run(options = {})
-      fetch(url).process
+      fetch(url).process_detail
     end
 
     def process(options = {})
@@ -29,11 +29,13 @@ class DemoScraper < Scraper
     end
 
     def process_detail(options = {})
-      return unless options[:response][:code] == "200"
+      # return unless options[:response][:code] == "200"
 
-      html = Nokogiri::HTML(options[:response][:body])
+      # html = Nokogiri::HTML(options[:response][:body])
 
       response_hash = {}
+      response_hash['test'] = 1
+      response_hash['test2'] = 2
 
       # Logic
       # return if 'Guard Condition'

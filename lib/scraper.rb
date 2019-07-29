@@ -109,7 +109,7 @@ class Scraper
         log('SCRAPER', method: :perform, with: options[:with], options: options.inspect)
         klass.send options[:with], options
       rescue StandardError => e
-        log('SCRAPER', 'RAISED_ERROR', method: :perform, e.message)
+        log('SCRAPER', 'RAISED_ERROR', method: :perform, message: e.message)
         raise
       end
     end
