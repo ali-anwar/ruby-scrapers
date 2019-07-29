@@ -11,7 +11,8 @@ class ScraperInternetProxy < ScraperProxy
       params: params,
     }
 
-    Scraper.execute(options)
+    scrapper_klass = Object.const_get(options[:klass].to_s)
+    scrapper_klass.execute(options)
   end
 
 end
