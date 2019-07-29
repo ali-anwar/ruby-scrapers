@@ -8,3 +8,4 @@ gem 'nokogiri'
 gem 'chronic_duration'
 gem "htmlentities"
 gem 'activesupport'
+gem 'byebug'
