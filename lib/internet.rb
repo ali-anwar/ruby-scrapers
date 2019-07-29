@@ -30,11 +30,17 @@ class Internet
       options[:try] = options[:try].to_i + 1
       request = HTTParty.get(url, httparty_options(options)) rescue nil
       return {} unless request
+
       if (request.code.to_i != 200 || (request.code.to_i == 200 && request.body.to_s == "")) && options[:try].to_i < 5
         sleep 5
         return get_online(url, options)
       end
-      {body: sanitize_string(request.body.to_s), headers: request.headers.to_hash, code: request.code.to_s}
+
+      {
+        body: sanitize_string(request.body.to_s),
+        headers: request.headers.to_hash,
+        code: request.code.to_s
+      }
     end
 
     def open(url, options = {})

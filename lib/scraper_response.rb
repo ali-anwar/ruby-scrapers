@@ -1,7 +1,8 @@
 class ScraperResponse
-  attr_reader :scrape_file_name, :out_formats
+  attr_reader :rows, :scrape_file_name, :out_formats
 
-  def initialize(scrape_file_name:, out_formats: [:json])
+  def initialize(rows:, scrape_file_name:, out_formats: [:json])
+    @rows = rows
     @scrape_file_name = scrape_file_name
     @out_formats = out_formats
   end
