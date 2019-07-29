@@ -24,6 +24,14 @@ class Scrapers
     def root
       Dir.pwd
     end
+
+    def commandline?
+      ENV['SCRAPERS_COMMANDLINE'].present?
+    end
+
+    def production?
+      self.env == 'production'
+    end
   end
 
 end

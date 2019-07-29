@@ -4,12 +4,13 @@ require 'json'
 require 'nokogiri'
 require 'chronic_duration'
 require 'htmlentities'
+require 'logging/custom_logger'
+require 'byebug'
 
 class Scraper
   class << self
-    def verify_data(rows)
-      data = rows.first
-      # raise if condition fails
+    def scrape_name
+      raise "Override Scraper#scrape_name in subclass"
     end
 
     def escape_html_characters(str)
@@ -17,15 +18,19 @@ class Scraper
     end
 
     def file_name
-      self.name.underscore
+      scrape_name
     end
 
     def file_name_with_ext
-      [self.scrape_name, 'json'].join('.')
+      [file_name, 'json'].join('.')
     end
 
     def gzipped_file_name_with_ext
       [file_name_with_ext, 'gz'].join('.')
+    end
+
+    def log_file_name
+      File.join("log", "#{file_name}.log")
     end
 
     def scrape_file_name
@@ -52,19 +57,13 @@ class Scraper
       end
     end
 
-    def scrape_name
-      raise "Override Scraper#scrape_name in subclass"
-    end
-
     def execute(*args)
-      klass = Object.const_get(args.first[:klass].to_s)
-
-      Scraper.process(*args)
+      process(*args)
     end
 
     def run_all
-      self.list.each do |scraper|
-        self.execute(klass: scraper.name)
+      list.each do |scraper|
+        execute(klass: scraper.name)
       end
     end
 
@@ -73,11 +72,11 @@ class Scraper
     end
 
     def fetch(url, *args)
-      ScraperInternetProxy.new(self.name, url, *args)
+      ScraperInternetProxy.new(name, url, *args)
     end
 
     def hard_fetch(url)
-      ScraperInternetProxy.new(self.name, url, force: true)
+      ScraperInternetProxy.new(name, url, force: true)
     end
 
     def fetch_now(options = {})
@@ -92,9 +91,16 @@ class Scraper
         end
     end
 
+    def log(*tags, **params)
+      custom_logger.log(*tags, **params)
+    end
+
+    def custom_logger
+      Logging::CustomLogger.new(log_file_name)
+    end
+
     def process(*args)
       options = args.first.symbolize_keys_recursive
-
       Scraper.perform options.merge(response: fetch_now(options), message: options[:url])
     end
 
@@ -119,21 +125,18 @@ class Scraper
     end
 
     def start(options = {})
-      log 'SCRAPER', method: :start, time: "Scraper started at #{Time.zone.now}"
-      $class = self
+      log 'SCRAPER', method: :start, time: "Scraper started at #{Time.now}"
 
       return unless Scrapers.commandline?
 
       remove_old_files
-
       begin
-        self.run(options)
+        run(options)
       rescue StandardError => e
         log 'SCRAPER', method: :start, message: e.message
         log 'SCRAPER', method: :start, backtrace: e.backtrace.join("\n")
         raise e unless Scrapers.commandline?
       end
     end
-
   end
 end
