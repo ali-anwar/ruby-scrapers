@@ -106,10 +106,10 @@ class Scraper
       log('SCRAPER', method: :perform, message: ["Going to", options[:with], options.delete(:message)].join(' '))
 
       begin
-        p options[:with]
+        log('SCRAPER', method: :perform, with: options[:with], options: options.inspect)
         klass.send options[:with], options
-      rescue
-        klass.send :set_failed_flag
+      rescue StandardError => e
+        log('SCRAPER', 'RAISED_ERROR', method: :perform, e.message)
         raise
       end
     end
@@ -122,15 +122,15 @@ class Scraper
       log 'SCRAPER', method: :start, time: "Scraper started at #{Time.zone.now}"
       $class = self
 
-      return if !Scrapers.commandline? && get_jobs_count.to_i > 0 && get_failed_flag.to_i.zero?
+      return unless Scrapers.commandline?
 
       remove_old_files
 
       begin
         self.run(options)
-      rescue Exception => e
-        log e.message
-        log e.backtrace.join("\n")
+      rescue StandardError => e
+        log 'SCRAPER', method: :start, message: e.message
+        log 'SCRAPER', method: :start, backtrace: e.backtrace.join("\n")
         raise e unless Scrapers.commandline?
       end
     end
