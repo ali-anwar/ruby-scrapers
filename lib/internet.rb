@@ -22,7 +22,9 @@ class Internet
 
     def get(url, options = {})
       HtmlCache.fetch(url) do
-        get_online(url, options)
+        SleepDispatch.call do
+          get_online(url, options)
+        end
       end
     end
 
