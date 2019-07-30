@@ -58,7 +58,8 @@ class Scraper
     end
 
     def execute(*args)
-      process(*args)
+      options = args.first.symbolize_keys_recursive
+      self.perform options.merge(response: fetch_now(options), message: options[:url])
     end
 
     def run_all
@@ -97,11 +98,6 @@ class Scraper
 
     def custom_logger
       Logging::CustomLogger.new(log_file_name)
-    end
-
-    def process(*args)
-      options = args.first.symbolize_keys_recursive
-      Scraper.perform options.merge(response: fetch_now(options), message: options[:url])
     end
 
     def perform(options = {})
