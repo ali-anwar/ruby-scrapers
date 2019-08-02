@@ -107,12 +107,9 @@ class Scraper
 
       log('SCRAPER', method: :perform, message: ["Going to", options[:with], options.delete(:message)].join(' '))
 
-      begin
+      RetryRun.call(:perform, custom_logger) do
         log('SCRAPER', method: :perform, with: options[:with], options: options.inspect)
         klass.send options[:with], options
-      rescue StandardError => e
-        log('SCRAPER', 'RAISED_ERROR', method: :perform, message: e.message)
-        raise
       end
     end
 
