@@ -9,6 +9,10 @@ class DemoScraper < Scraper
       'scraper-name'
     end
 
+    def generate_json_to_csv
+      ScrapeJsonToCsvGenerator.new(scrape_name).process
+    end
+
     def run(options = {})
       fetch(url).process_detail
     end
@@ -39,8 +43,8 @@ class DemoScraper < Scraper
 
       # Logic
       # return if 'Guard Condition'
-
       ScraperResponse.new([response_hash], scrape_file_name: scrape_name).process
+      p 'complete'
     end
 
     def url(page_no = 1)
