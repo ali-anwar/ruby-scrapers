@@ -72,7 +72,7 @@ class Scraper
       ObjectSpace.each_object(Class).select { |klass| klass < self }
     end
 
-    def fetch(url, args = {})
+    def fetch(url, *args)
       ScraperInternetProxy.new(name, url, args)
     end
 
@@ -83,7 +83,7 @@ class Scraper
     def fetch_now(options = {})
       return unless options[:url].present?
 
-      params = options[:params] || {}
+      params = options[:params].present? ? options[:params] : {}
       if params[:force]
         Internet.get_online(options[:url], options)
       else
