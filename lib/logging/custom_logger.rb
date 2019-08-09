@@ -23,7 +23,7 @@ module Logging
     def logger
       return @logger if @logger
 
-      std_out = commandline? ? File.join('log', "#{env}.log") : @log_file_name
+      std_out = commandline? ? STDOUT : @log_file_name
       @logger = Logger.new(std_out)
       @logger.level = production? ? Logger::ERROR : Logger::INFO
 

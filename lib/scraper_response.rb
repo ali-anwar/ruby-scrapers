@@ -3,7 +3,7 @@ class ScraperResponse
 
   # @param [Hash ] opts
     # @values :sync true/false if parallel gem processes using file to write pass sync true
-  def initialize(rows, scrape_file_name:, out_formats: [:json], opts = {})
+  def initialize(rows, scrape_file_name:, out_formats: [:json], opts: {})
     @rows = rows
     @scrape_file_name = scrape_file_name
     @out_formats = out_formats
