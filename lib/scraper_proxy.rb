@@ -1,7 +1,8 @@
 class ScraperProxy
 
-  def initialize(klass, *args)
+  def initialize(klass, url, *args)
     @klass = klass
+    @url = url
     @args = args
   end
 

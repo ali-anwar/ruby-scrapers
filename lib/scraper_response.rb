@@ -1,10 +1,13 @@
 class ScraperResponse
-  attr_reader :rows, :scrape_file_name, :out_formats
+  attr_reader :rows, :scrape_file_name, :out_formats, :opts
 
-  def initialize(rows, scrape_file_name:, out_formats: [:json])
+  # @param [Hash ] opts
+    # @values :sync true/false if parallel gem processes using file to write pass sync true
+  def initialize(rows, scrape_file_name:, out_formats: [:json], opts = {})
     @rows = rows
     @scrape_file_name = scrape_file_name
     @out_formats = out_formats
+    @opts = opts
   end
 
   def process
@@ -16,7 +19,13 @@ class ScraperResponse
 
   def generate_or_write_json_file
     file = File.open(scrapes_directory("#{scrape_file_name}.json"), 'a')
-    file.flock(File::LOCK_EX)
+
+    if opts[:sync]
+      file.sync = true
+    else
+      file.flock(File::LOCK_EX)
+    end
+
     file.puts rows.collect(&:to_json).join("\n")
     file.close
   end

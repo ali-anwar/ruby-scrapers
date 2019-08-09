@@ -10,7 +10,13 @@ class Internet
       }
       o[:headers]["referer"] = options[:referer] if options[:referer].present?
       o[:basic_auth] = options[:basic_auth] if options[:basic_auth].present?
-      o[:headers] = o[:headers].merge(options[:headers]) if options[:headers].present?
+
+      if options[:headers].present?
+        o[:headers] = o[:headers].merge(options[:headers])
+      elsif options[:params].present? && options[:params][:headers].present?
+        o[:headers] = o[:headers].merge(options[:params][:headers])
+      end
+
       o
     end
 

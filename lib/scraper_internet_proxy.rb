@@ -3,7 +3,8 @@ require 'scraper_proxy'
 class ScraperInternetProxy < ScraperProxy
 
   def callback(mtd, *args, &block)
-    url, params = @args
+    url = @url
+    params = @args
     options = {
       klass: @klass,
       with: mtd,
