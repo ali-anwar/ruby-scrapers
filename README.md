@@ -16,4 +16,14 @@ OR
 $ ./bin/runner BridgeReportScraper.run
 ```
 
-You can check the `tmp` folder you will fine the html cache
+The output of the `./bin/runner BridgeReportScraper.run` will store in `ruby_cli_scrapers/scrapes/bridge-reports.json` file.
+
+## Convert JSON to CSV
+
+```
+$ ./bin/runner BridgeReportScraper.generate_json_to_csv
+```
+
+The output of `./bin/runner BridgeReportScraper.generate_json_to_csv` will store in `ruby_cli_scrapers/scrapes/bridge-reports.csv` file.
+
+Check the `tmp` folder for the HTML cache, which will prevent multiple re-runs to hit the actual URL, and this will only fetch the data from local cache.
